@@ -19,6 +19,6 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/roles', rolesRouter);
-app.use('/permisos', permisosRouter);
+app.use('/permissions', permisosRouter);
 
 module.exports = app;
