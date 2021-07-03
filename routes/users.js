@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 
-const { findUsers, createUser, updateUser } = require("../services/Clients.service");
+const { findUsers, createUser, updateUser, deleteUser } = require("../services/Clients.service");
 
 /* GET users listing. */
 router
@@ -54,6 +54,26 @@ router
         msg: "Internal Server error",
       });
     }
+  })
+  .delete("/:id", async (req, res) => {
+
+    try {
+      
+      const { params: {id} } = req;
+      const result = await deleteUser(id);
+
+      res.status(200).json({
+        msg: "Usuario Eliminado",
+        body: result,
+      });
+
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        msg: "Internal Server error",
+      });
+    }
+
   })
 
 module.exports = router;

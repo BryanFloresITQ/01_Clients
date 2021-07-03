@@ -32,9 +32,7 @@ const createUser = (user) => new Promise(async(resolve, reject) => {
 });
 
 const updateUser = (id, nombre, apellido) => new Promise(async(resolve, reject) => {
-
     try {
-        
         const DB = await MongoConnection();
         const clients = DB.collection(COLLECTION);
         const result = await clients.updateOne(
@@ -43,17 +41,28 @@ const updateUser = (id, nombre, apellido) => new Promise(async(resolve, reject) 
                 $set: {nombre: nombre, apellido: apellido}
             }
         )
-
         resolve(result);
-
     } catch (error) {
         reject(error)
     }
+});
 
+const deleteUser = (id) => new Promise(async(resolve, reject) => {
+    try {
+        const DB = await MongoConnection();
+        const clients = DB.collection(COLLECTION);
+        const result = await clients.deleteOne(
+            {"_id": ObjectId(id)},
+        )
+        resolve(result);
+    } catch (error) {
+        reject(error)
+    }
 });
 
 module.exports = {
     findUsers,
     createUser,
     updateUser,
+    deleteUser
 }
