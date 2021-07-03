@@ -1,4 +1,6 @@
+const { response } = require('express');
 const { MongoConnection } = require('../lib/Mongo');
+var ObjectId = require("mongodb").ObjectID;
 
 //Collection
 const COLLECTION = "clients"
@@ -29,7 +31,29 @@ const createUser = (user) => new Promise(async(resolve, reject) => {
     }
 });
 
+const updateUser = (id, nombre, apellido) => new Promise(async(resolve, reject) => {
+
+    try {
+        
+        const DB = await MongoConnection();
+        const clients = DB.collection(COLLECTION);
+        const result = await clients.updateOne(
+            {"_id": ObjectId(id)},
+            {
+                $set: {nombre: nombre, apellido: apellido}
+            }
+        )
+
+        resolve(result);
+
+    } catch (error) {
+        reject(error)
+    }
+
+});
+
 module.exports = {
     findUsers,
     createUser,
+    updateUser,
 }
