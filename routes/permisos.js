@@ -63,7 +63,7 @@ router
         params: { id },
       } = req;
       const result = await deletePermiso(id);
-      const permisos = await findPermisos(id);
+      const permisos = await findPermisos();
       res.status(200).json({
         msg: "permiso eliminado",
         body: permisos,
