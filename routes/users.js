@@ -1,13 +1,16 @@
+const { insertUser, changePassword } = require('../lib/Schema/Validacion');
+const { DataValidator } = require('../middleware/dataValidator');
 var express = require("express");
 var router = express.Router();
 
-const { findUsers, createUser, updateUser, deleteUser } = require("../services/Clients.service");
+const { findUsers, createUser, updateUser, deleteUser, change_password } = require("../services/Clients.service");
 
 /* GET users listing. */
 router
   .get("/", async function (req, res, next) {
     try {
-      const users = await findUsers();
+      const { query: {id} } = req;
+      const users = await findUsers(id);
       res.status(200).json({
         msg: "Path Users",
         body: users,
@@ -19,11 +22,12 @@ router
       });
     }
   })
-  .post("/", async (req, res) => {
+  .post("/", DataValidator("body",insertUser), async (req, res) => {
     try {
-      let { body: user } = req;
 
-      const result = await createUser(user);
+      const {primer_nombre, segundo_nombre, primer_apellido, segundo_apellido} = req.body;
+      
+      const result = await createUser(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido);
 
       res.status(200).json({
         msg: "Usuario Creado",
@@ -36,16 +40,17 @@ router
       });
     }
   })
-  .put("/:id", async (req, res) => {
+  .put("/", DataValidator("body",insertUser), async (req, res) => {
     try {
       
-      const { params: {id} } = req;
-      const {nombre, apellido} = req.body;
-      const result = await updateUser(id, nombre, apellido);
+      const { query: {id} } = req;
+      const {primer_nombre, segundo_nombre, primer_apellido, segundo_apellido} = req.body;
+      const result = await updateUser(id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido);
+      const userUpdated = await findUsers(id);
 
       res.status(200).json({
         msg: "Usuario Actualizado",
-        body: result,
+        body: userUpdated,
       });
 
     } catch (error) {
@@ -61,12 +66,41 @@ router
       
       const { params: {id} } = req;
       const result = await deleteUser(id);
+      const userDeleted = await findUsers();
 
       res.status(200).json({
         msg: "Usuario Eliminado",
-        body: result,
+        body: userDeleted,
       });
 
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        msg: "Internal Server error",
+      });
+    }
+
+  })
+  .put("/change-password/:id",DataValidator("body",changePassword), async (req, res) => {
+
+    try {
+      const { params: {id} } = req;
+      const {new_password, repeat_password} = req.body;
+      const change_pass = await change_password(id, new_password, repeat_password);
+      const passwordUpdated = await findUsers(id);
+
+      if (change_pass.msg == "error"){
+        res.status(200).json({
+          msg: "Las contraseñas no coinciden",
+        });
+      }
+      else{
+        
+        res.status(200).json({
+          msg: "Contraseña Actualizada",
+          body: passwordUpdated,
+        });
+      }
     } catch (error) {
       console.log(error);
       res.status(500).json({
