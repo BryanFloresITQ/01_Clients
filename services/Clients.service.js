@@ -26,7 +26,7 @@ const findUsers = (id) => new Promise(async(resolve, reject) => {
     }
 });
 
-const createUser = (primer_nombre, segundo_nombre, primer_apellido, segundo_apellido) => new Promise(async(resolve, reject) => {
+const createUser = (primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, rol) => new Promise(async(resolve, reject) => {
     try {
         
         const DB = await MongoConnection();
@@ -39,7 +39,7 @@ const createUser = (primer_nombre, segundo_nombre, primer_apellido, segundo_apel
             segundo_apellido: segundo_apellido,
             codigo_acceso: token,
             password: token,
-            rol: "60e0ab3ca70cea4538108d81", //Se le asigna siempre el rol de Cliente por defecto
+            rol: rol,
             nuevo_usuario: true
         });
         resolve(result);

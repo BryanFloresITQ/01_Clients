@@ -1,4 +1,4 @@
-const { insertUser, changePassword } = require('../lib/Schema/Validacion');
+const { insertUser, changePassword, updateUser } = require('../lib/Schema/Validacion');
 const { DataValidator } = require('../middleware/dataValidator');
 var express = require("express");
 var router = express.Router();
@@ -7,9 +7,24 @@ const { findUsers, createUser, updateUser, deleteUser, change_password } = requi
 
 /* GET users listing. */
 router
-  .get("/", async function (req, res, next) {
+.get("/", async (req, res) => {
+  try {
+    const users = await findUsers();
+    res.status(200).json({
+      msg: "Path Users",
+      body: users,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "Internal Server error",
+    });
+  }
+})
+  .get("/:id", async (req, res) => {
     try {
-      const { query: {id} } = req;
+      const { id } = req.params;
+      console.log(id);
       const users = await findUsers(id);
       res.status(200).json({
         msg: "Path Users",
@@ -25,9 +40,9 @@ router
   .post("/", DataValidator("body",insertUser), async (req, res) => {
     try {
 
-      const {primer_nombre, segundo_nombre, primer_apellido, segundo_apellido} = req.body;
+      const {primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, rol} = req.body;
       
-      const result = await createUser(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido);
+      const result = await createUser(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, rol);
 
       res.status(200).json({
         msg: "Usuario Creado",
@@ -40,7 +55,7 @@ router
       });
     }
   })
-  .put("/", DataValidator("body",insertUser), async (req, res) => {
+  .put("/", DataValidator("body",updateUser), async (req, res) => {
     try {
       
       const { query: {id} } = req;
