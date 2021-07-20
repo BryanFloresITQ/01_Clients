@@ -55,7 +55,7 @@ router
       });
     }
   })
-  .put("/", DataValidator("body",UpdateUser), async (req, res) => {
+  .put("/:id", DataValidator("body",UpdateUser), async (req, res) => {
     try {
       
       const { params: {id} } = req;
