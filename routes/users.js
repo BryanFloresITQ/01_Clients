@@ -58,7 +58,7 @@ router
   .put("/", DataValidator("body",UpdateUser), async (req, res) => {
     try {
       
-      const { query: {id} } = req;
+      const { params: {id} } = req;
       const {primer_nombre, segundo_nombre, primer_apellido, segundo_apellido} = req.body;
       const result = await updateUser(id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido);
       const userUpdated = await findUsers(id);
