@@ -1,4 +1,4 @@
-const { insertUser, changePassword, updateUser } = require('../lib/Schema/Validacion');
+const { insertUser, changePassword, UpdateUser } = require('../lib/Schema/Validacion');
 const { DataValidator } = require('../middleware/dataValidator');
 var express = require("express");
 var router = express.Router();
@@ -55,7 +55,7 @@ router
       });
     }
   })
-  .put("/", DataValidator("body",updateUser), async (req, res) => {
+  .put("/", DataValidator("body",UpdateUser), async (req, res) => {
     try {
       
       const { query: {id} } = req;
