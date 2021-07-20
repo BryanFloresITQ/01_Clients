@@ -2,6 +2,8 @@ var express = require('express');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const cors = require('cors');
+
 require('dotenv').config();
 
 var indexRouter = require('./routes/index');
@@ -10,6 +12,7 @@ var rolesRouter = require('./routes/roles');
 var permisosRouter = require('./routes/permisos');
 
 var app = express();
+app.use(cors());
 
 app.use(logger('dev'));
 app.use(express.json());
