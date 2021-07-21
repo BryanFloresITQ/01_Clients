@@ -39,10 +39,10 @@ router
     });
   }
 })
-.put("/", DataValidator("body",UpdateRol), async (req, res) => {
+.put("/:id", DataValidator("body",UpdateRol), async (req, res) => {
   try {
     
-    const { query: {id} } = req;
+    const { params: {id} } = req;
     const {nombre, permisos} = req.body;
     const result = await updateRol(id, nombre, permisos);
     const rolUpdated = await findRoles(id);
